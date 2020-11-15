@@ -115,6 +115,9 @@ class Login extends Component {
                                     loading={this.state.loading}>
                                     登录
                                 </Button>
+                                <Link to="/register">
+                                    注册
+                                </Link>
                             </Form.Item>
                         </Form>
                     </div>

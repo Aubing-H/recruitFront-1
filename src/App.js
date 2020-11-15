@@ -12,6 +12,7 @@ const DefaultLayout = loadable(() => import(/* webpackChunkName: 'default' */ '.
 const View404 = loadable(() => import(/* webpackChunkName: '404' */ './views/Others/404'))
 const View500 = loadable(() => import(/* webpackChunkName: '500' */ './views/Others/500'))
 const Login = loadable(() => import(/* webpackChunkName: 'login' */ './views/Login'))
+const Register=loadable(()=>import('./views/Register'))
 
 const App = () => (
     <Router>
@@ -19,6 +20,7 @@ const App = () => (
             <Route path='/' exact render={() => <Redirect to='/index' />} />
             <Route path='/500' component={View500} />
             <Route path='/login' component={Login} />
+            <Route path='/register' component={Register}/>
             <Route path='/404' component={View404} />
             <Route component={DefaultLayout} />
         </Switch>
