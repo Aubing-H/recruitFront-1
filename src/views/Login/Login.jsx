@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { Layout, Input, Icon, Form, Button, Divider, message, notification } from 'antd'
-import { withRouter } from 'react-router-dom'
+import { withRouter,Link } from 'react-router-dom'
 // import axios from '@/api'
 // import { API } from '@/api/config'
 import '@/style/view-style/login.scss'
 
 class Login extends Component {
     state = {
+        //控制button是否展示加载状态
         loading: false
     }
 
@@ -20,36 +21,45 @@ class Login extends Component {
         e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // let { username, password } = values
-                // axios
-                //     .post(`${API}/login`, { username, password })
-                //     .then(res => {
-                //         if (res.data.code === 0) {
-                //             localStorage.setItem('user', JSON.stringify(res.data.data.user))
-                //             localStorage.setItem('token', res.data.data.token)
-                //             this.props.history.push('/')
-                //             message.success('登录成功!')
-                //         } else {
-                //             // 这里处理一些错误信息
-                //         }
-                //     })
-                //     .catch(err => {})
-
-                // 这里可以做权限校验 模拟接口返回用户权限标识
-                switch (values.username) {
-                    case 'admin':
-                        values.auth = 0
-                        break
-                    default:
-                        values.auth = 1
+                let { username, password } = values
+                let myHeaders = new Headers({
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'text/plain'
+                });
+                let url='http://127.0.0.1:8080/user/login'
+                if (values) {
+                    let paramsArray = [];
+                    //拼接参数
+                    Object.keys(values).forEach(key => paramsArray.push(key + '=' + values[key]))
+                    if (url.search(/\?/) === -1) {
+                        url += '?' + paramsArray.join('&')
+                    } else {
+                        url += '&' + paramsArray.join('&')
+                    }
                 }
-
-                localStorage.setItem('user', JSON.stringify(values))
+                    fetch(url,{
+                    method:'GET',
+                    headers: myHeaders,
+                    mode: 'cors',
+                    //转或称字符串格式
+                }).then(res=>res.json()).then(
+                    data=>{
+                        console.log(data);
+                        if (data.isSuccess === 'success') {
+                            values.auth=data.kind
+                            localStorage.setItem('user', JSON.stringify(values))
+                            localStorage.setItem('token', data.token)
+                            this.props.history.push('/')
+                            message.success('登录成功!')
+                        } else {
+                            // 这里处理一些错误信息
+                            message.error("密码或用户名错误")
+                            //todo 优化登录失败这里，可以将用户输入的用户名保存下来
+                            this.props.history.push('/login')
+                        }
+                    }
+                )
                 this.enterLoading()
-                this.timer = setTimeout(() => {
-                    message.success('登录成功!')
-                    this.props.history.push('/')
-                }, 2000)
             }
         })
     }
@@ -57,7 +67,7 @@ class Login extends Component {
     componentDidMount() {
         notification.open({
             message: '欢迎使用后台管理平台',
-            duration: null,
+            duration: 20,
             description: '账号 admin(管理员) 其他(游客) 密码随意'
         })
     }
@@ -73,7 +83,7 @@ class Login extends Component {
             <Layout className='login animated fadeIn'>
                 <div className='model'>
                     <div className='login-form'>
-                        <h3>后台管理系统</h3>
+                        <h3>召集令系统</h3>
                         <Divider />
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Item>
