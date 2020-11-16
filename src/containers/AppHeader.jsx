@@ -14,10 +14,6 @@ const AppHeader = props => {
                     <Icon type='edit' />
                     个人信息
                 </Menu.Item>
-                {/*<Menu.Item>*/}
-                {/*    <Icon type='setting' theme='filled' />*/}
-                {/*    系统设置*/}
-                {/*</Menu.Item>*/}
             </Menu.ItemGroup>
             <Menu.Divider />
             <Menu.Item>

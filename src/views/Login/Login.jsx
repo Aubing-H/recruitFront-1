@@ -53,7 +53,7 @@ class Login extends Component {
                             message.success('登录成功!')
                         } else {
                             // 这里处理一些错误信息
-                            message.error("密码或用户名错误")
+                            message.error("用户名或密码错误")
                             //todo 优化登录失败这里，可以将用户输入的用户名保存下来
                             this.props.history.push('/login')
                         }
