@@ -12,9 +12,9 @@ import {
     Col,
     Alert,
     Tooltip,
-    Radio, Checkbox, InputNumber, DatePicker, AutoComplete, Cascader, Rate, Switch, Slider
+    Radio, Checkbox, InputNumber, DatePicker
 } from 'antd'
-import { withRouter,Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 const { Option } = Select
 
@@ -55,14 +55,15 @@ class Register extends Component {
                 method:'POST',
                 headers:myHeaders,
                 body:JSON.stringify(values),
-                mode:'cors',
+                // credentials:"include",
+                mode:'cors'
             }).then(res=>res.text()).then(data=>{
                 console.log(data)
                 if(data==="success"){
                     message.info('注册成功')
                     this.props.history.push('/login')
                 }else{
-                    this.state.loading=false
+                    this.setState({loading:false})
                     message.error("注册失败,请联系管理员：yuhang@bupt.edu.cn")
                 }
             })
@@ -256,7 +257,7 @@ class Register extends Component {
                                         valuePropName: 'checked'
                                     })(
                                         <Checkbox>
-                                            阅读并理解 <a href='#'>此协议</a>
+                                            阅读并理解 <a href='www.baidu.com'>此协议</a>
                                         </Checkbox>
                                     )}
                                 </Form.Item>

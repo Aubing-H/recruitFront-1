@@ -3,25 +3,49 @@ const menu = [
         key: '/index',
         title: '首页',
         icon: 'home',
+        auth: [0,1]
+    },
+    {
+        key: '/users_info',
+        title: '用户信息',
+        icon: 'user',
+        auth: [1]
+    },
+    {
+        key: '/offer_info',
+        title: '召集令信息',
+        icon: 'bulb',
+        auth: [1]
+    },
+    {
+        key: '/receiver_info',
+        title: '接令请求信息',
+        icon: 'bulb',
+        auth: [1]
+    },
+    {
+        key: '/profit_info',
+        title: '收益信息',
+        icon: 'pie-chart',
         auth: [1]
     },
     {
         key: '/personal_info',
         title: '个人信息',
         icon: 'user',
-        auth: [1]
+        auth: [0]
     },
     {
         key: '/owner',
         title: '我是令主',
         icon: 'appstore',
-        auth: [1]
+        auth: [0]
     },
     {
         key: '/receiver',
         title: '我要接令',
         icon: 'form',
-        auth: [1],
+        auth: [0],
         subs: [{ title: '查询召集令', key: '/receiver/find', icon: '' }, { title: '已接令', key: '/receiver/modify', icon: '' }]
     },
     {

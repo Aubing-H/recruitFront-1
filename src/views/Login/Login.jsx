@@ -21,7 +21,6 @@ class Login extends Component {
         e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let { username, password } = values
                 let myHeaders = new Headers({
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'text/plain'
@@ -37,10 +36,11 @@ class Login extends Component {
                         url += '&' + paramsArray.join('&')
                     }
                 }
-                    fetch(url,{
+                fetch(url,{
                     method:'GET',
                     headers: myHeaders,
-                    mode: 'cors',
+                    mode: 'cors'
+                    // credentials:"include"
                     //转或称字符串格式
                 }).then(res=>res.json()).then(
                     data=>{
@@ -56,6 +56,9 @@ class Login extends Component {
                             message.error("用户名或密码错误")
                             //todo 优化登录失败这里，可以将用户输入的用户名保存下来
                             this.props.history.push('/login')
+                            this.setState({
+                                loading:false
+                            })
                         }
                     }
                 )
