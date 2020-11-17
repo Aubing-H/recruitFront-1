@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Dropdown, Icon, Layout, Avatar, Badge } from 'antd'
+import {Link} from 'react-router-dom'
 
 const { Header } = Layout
 
@@ -12,7 +13,9 @@ const AppHeader = props => {
                 <Menu.Divider />
                 <Menu.Item>
                     <Icon type='edit' />
-                    个人信息
+                    <Link to='/personal_info'>
+                        个人信息
+                    </Link>
                 </Menu.Item>
             </Menu.ItemGroup>
             <Menu.Divider />

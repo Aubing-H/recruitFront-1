@@ -32,6 +32,12 @@ const UploadView = loadable(() => import(/* webpackChunkName: 'upload' */ '@/vie
 const Three = loadable(() => import(/* webpackChunkName: 'three' */ '@/views/TestView'))
 const About = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/About'))
 
+
+const personal_info = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/Personal_info'))
+
+
+
+
 const routes = [
     { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
     { path: '/public/button', exact: false, name: '按钮', component: ButtonView, auth: [1] },
@@ -50,7 +56,8 @@ const routes = [
     { path: '/others/editor', exact: false, name: '富文本', component: EditorView, auth: [1] },
     { path: '/others/upload', exact: false, name: '上传', component: UploadView, auth: [1] },
     { path: '/one/two/three', exact: false, name: '三级', component: Three },
-    { path: '/about', exact: false, name: '关于', component: About, auth: [1] }
+    { path: '/about', exact: false, name: '关于', component: About, auth: [1] },
+    { path: '/personal_info', exact: false, name: '个人信息', component: personal_info, auth: [0,1] }
 ]
 
 export default routes
