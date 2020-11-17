@@ -119,14 +119,6 @@ class Register extends Component {
                 }
             }
         }
-        const prefixSelector = getFieldDecorator('prefix', {
-            initialValue: '86'
-        })(
-            <Select style={{ width: 70 }}>
-                <Option value='86'>+86</Option>
-                <Option value='87'>+87</Option>
-            </Select>
-        )
 
 
         return (
@@ -245,7 +237,7 @@ class Register extends Component {
                                     {getFieldDecorator('phone', {
                                         rules: [{ required: true, message: '请输入联系电话!' },
                                             {min:11,max:11,message: '电话号码为11位'}]
-                                    })(<Input addonBefore={prefixSelector} />)}
+                                    })(<Input />)}
                                 </Form.Item>
                                 <Form.Item label='简介'>
                                     {getFieldDecorator('content', {
