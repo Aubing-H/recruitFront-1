@@ -41,8 +41,7 @@ class Register extends Component {
         this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
             if(err)return
             const values={
-                ...fieldsValue,
-                'date-picker': fieldsValue['date-picker'] ? fieldsValue['date-picker'].format('YYYY-MM-DD') : ''
+                ...fieldsValue
             }
             console.log(values)
             this.registering()
@@ -191,11 +190,6 @@ class Register extends Component {
                                     {getFieldDecorator('age', {
                                         rules: [{ required: true, message: '请输入年龄' }]
                                     })(<InputNumber placeholder='请输入年龄' style={{ width: '100%' }} />)}
-                                </Form.Item>
-                                <Form.Item label='出生年月'>
-                                    {getFieldDecorator('date-picker', {
-                                        rules: [{ type: 'object', required: true, message: '请选择日期' }]
-                                    })(<DatePicker style={{ width: '100%' }} placeholder='请选择日期' />)}
                                 </Form.Item>
                                 <Form.Item label='密码' hasFeedback>
                                     {getFieldDecorator('password', {
