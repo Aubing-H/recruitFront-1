@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Layout, BackTop, message } from 'antd'
+import { Layout, BackTop } from 'antd'
 import routes from '@/routes'
 import { menuToggleAction } from '@/store/actionCreators'
 import echarts from 'echarts/lib/echarts'
@@ -36,7 +36,6 @@ class DefaultLayout extends Component {
     loginOut = () => {
         localStorage.clear()
         this.props.history.push('/login')
-        message.success('登出成功!')
     }
     getMenu = menu => {
         let newMenu,
@@ -44,6 +43,7 @@ class DefaultLayout extends Component {
         if (!auth) {
             return menu
         } else {
+            //indexOf代表这个数组中是否包含这个值
             newMenu = menu.filter(res => res.auth && res.auth.indexOf(auth) !== -1)
             return newMenu
         }

@@ -12,17 +12,15 @@ const AppHeader = props => {
             <Menu.ItemGroup title='用户设置'>
                 <Menu.Divider />
                 <Menu.Item>
-                    <Icon type='edit' />
-                    <Link to='/personal_info'>
-                        个人信息
-                    </Link>
+                    <Icon type='edit' /><Link to={"/personal_info"}>个人信息</Link>
                 </Menu.Item>
             </Menu.ItemGroup>
             <Menu.Divider />
-            <Menu.Item>
-                <span onClick={loginOut}>
-                    <Icon type='logout' /> 退出登录
-                </span>
+            <Menu.Item onClick={loginOut}>
+                {/*<span onClick={loginOut}>*/}
+                {/*    <Icon type='logout' /> 退出登录*/}
+                {/*</span>*/}
+                <Icon type='logout' /> 退出登录
             </Menu.Item>
         </Menu>
     )

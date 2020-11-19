@@ -22,19 +22,53 @@ class Register extends Component {
         loading: false,
         confirmDirty: false,
         visible: true,
-        user_info:{
-            username:'test',
-            password:'1234',
-            name:'yh',
-            cardtype:0,
-            cardnum:'1234',
-            phone:'11111111111',
-            content:'for test first',
-            address:'成都',
-            age:12,
-
-
+        user_info:{}
+    }
+    getUserInfo(){
+        let myHeaders = new Headers({
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'text/plain'
+        });
+        let url='http://127.0.0.1:8080/user/info'
+        let temp_value=JSON.parse(localStorage.getItem('user'))
+        let token=localStorage.getItem('token')
+        let values={
+            username:temp_value.username
         }
+        if (values) {
+            let paramsArray = [];
+            //拼接参数
+            Object.keys(values).forEach(key => paramsArray.push(key + '=' + values[key]))
+            if (url.search(/\?/) === -1) {
+                url += '?' + paramsArray.join('&')
+            } else {
+                url += '&' + paramsArray.join('&')
+            }
+        }
+        fetch(url,{
+            method:'POST',
+            headers: myHeaders,
+            mode: 'cors',
+            body:token
+            //转或称字符串格式
+        }).then(res=>res.json()).then(
+            data=>{
+                console.log(data);
+                if (data.isSuccess === 'success') {
+                    this.setState({
+                        user_info:data.user
+                    })
+                } else {
+                    // 这里处理一些错误信息
+                    message.error("获取用户信息失败")
+                    //todo 优化登录失败这里，可以将用户输入的用户名保存下来
+                    this.props.history.push('/')
+                }
+            }
+        )
+    }
+    componentWillMount() {
+        this.getUserInfo()
     }
 
     modifying = () => {
@@ -52,8 +86,7 @@ class Register extends Component {
         this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
             if(err)return
             const values={
-                ...fieldsValue,
-                'date-picker': fieldsValue['date-picker'] ? fieldsValue['date-picker'].format('YYYY-MM-DD') : ''
+                ...fieldsValue
             }
             console.log(values)
             this.modifying()
@@ -169,6 +202,7 @@ class Register extends Component {
                                         <Radio value='0' disabled={true}>身份证</Radio>
                                         <Radio value='1' disabled={true}>护照</Radio>
                                     </Radio.Group>
+
                                 </Form.Item>
                                 <Form.Item label='证件号'>
                                     <Input disabled={true} value={this.state.user_info.cardnum}/>

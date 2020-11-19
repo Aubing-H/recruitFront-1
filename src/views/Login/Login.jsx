@@ -40,7 +40,6 @@ class Login extends Component {
                     method:'GET',
                     headers: myHeaders,
                     mode: 'cors'
-                    // credentials:"include"
                     //转或称字符串格式
                 }).then(res=>res.json()).then(
                     data=>{
@@ -48,6 +47,7 @@ class Login extends Component {
                         if (data.isSuccess === 'success') {
                             values.auth=data.kind
                             localStorage.setItem('user', JSON.stringify(values))
+                            //todo 后期改进token
                             localStorage.setItem('token', data.token)
                             this.props.history.push('/')
                             message.success('登录成功!')
@@ -71,7 +71,7 @@ class Login extends Component {
         notification.open({
             message: '欢迎使用后台管理平台',
             duration: 20,
-            description: '账号 admin(管理员) 其他(游客) 密码随意'
+            // description: ''
         })
     }
 
