@@ -61,7 +61,6 @@ class Register extends Component {
                 } else {
                     // 这里处理一些错误信息
                     message.error("获取用户信息失败")
-                    //todo 优化登录失败这里，可以将用户输入的用户名保存下来
                     this.props.history.push('/')
                 }
             }
@@ -85,10 +84,14 @@ class Register extends Component {
         e.preventDefault()
         this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
             if(err)return
+            let token=localStorage.getItem('token')
             const values={
                 ...fieldsValue
             }
-            console.log(values)
+            console.log({
+                values:values,
+                token:token
+            })
             this.modifying()
             let myHeaders = new Headers({
                 'Access-Control-Allow-Origin': '*',
@@ -98,15 +101,21 @@ class Register extends Component {
             fetch(url,{
                 method:'POST',
                 headers:myHeaders,
-                body:JSON.stringify(values),
-                // credentials:"include",
+                body:JSON.stringify({
+                    user:values,
+                    token:token
+                }),
                 mode:'cors'
             }).then(res=>res.text()).then(data=>{
                 console.log(data)
                 if(data==="success"){
                     message.info('修改成功')
                     //重新调用此界面
-                    this.props.history.push('/personal_info')
+                    this.setState({
+                        loading:false
+                    })
+                    // this.props.history.reload()
+                    // this.props.history.push('/personal_info')
                 }else{
                     this.setState({loading:false})
                     message.error("修改失败,请联系管理员：yuhang@bupt.edu.cn")
@@ -191,24 +200,41 @@ class Register extends Component {
                                             用户名
                                         </span>
                                     }>
-                                    <Input disabled={true} value={this.state.user_info.username}/>
+                                    {getFieldDecorator('username', {
+                                        rules: [{ required: true, message: '请输入用户名' },
+                                            {min:3,message: '用户名长度最少为3'}],
+                                        initialValue:this.state.user_info.username
+                                    })(<Input disabled={true}/>)}
                                 </Form.Item>
                                 {/*用户姓名*/}
                                 <Form.Item label='姓名'>
-                                    <Input disabled={true} value={this.state.user_info.name}/>
+                                    {getFieldDecorator('name', {
+                                        rules: [{ required: true, message: '请输入姓名' }],
+                                        initialValue:this.state.user_info.name
+                                    })(<Input disabled={true} />)}
                                 </Form.Item>
                                 <Form.Item label='证件类型'>
-                                    <Radio.Group style={{ width: '100%' }} value={this.state.user_info.cardtype}>
-                                        <Radio value='0' disabled={true}>身份证</Radio>
-                                        <Radio value='1' disabled={true}>护照</Radio>
-                                    </Radio.Group>
-
+                                    {getFieldDecorator('cardtype', {
+                                        rules: [{ required: true, message: '请选择证件类型' }],
+                                        initialValue: this.state.user_info.cardtype
+                                    })(
+                                        <Radio.Group style={{ width: '100%' }} disabled={true}>
+                                            <Radio value='0' >身份证</Radio>
+                                            <Radio value='1' >护照</Radio>
+                                        </Radio.Group>
+                                    )}
                                 </Form.Item>
                                 <Form.Item label='证件号'>
-                                    <Input disabled={true} value={this.state.user_info.cardnum}/>
+                                    {getFieldDecorator('cardnum', {
+                                        rules: [{ required: true, message: '请输入证件号' }],
+                                        initialValue:this.state.user_info.cardnum
+                                    })(<Input disabled={true} />)}
                                 </Form.Item>
                                 <Form.Item label='年龄'>
-                                    <InputNumber disabled={true} value={this.state.user_info.age} style={{ width: '100%' }} />
+                                    {getFieldDecorator('age', {
+                                        rules: [{ required: true, message: '请输入年龄' }],
+                                        initialValue:this.state.user_info.age
+                                    })(<InputNumber disabled={true} style={{ width: '100%' }} />)}
                                 </Form.Item>
                                 <Form.Item label='密码' hasFeedback>
                                     {getFieldDecorator('password', {
@@ -239,10 +265,14 @@ class Register extends Component {
                                     })(<Input.Password onBlur={this.handleConfirmBlur} placeholder='请确认密码' />)}
                                 </Form.Item>
                                 <Form.Item label='所在城市'>
-                                    <Select style={{ width: 100 }} disabled={true} value={this.state.user_info.address}>
-                                        <Option value='成都'>成都</Option>
-                                        <Option value='北京'>北京</Option>
-                                    </Select>
+                                    {getFieldDecorator('address', {
+                                        initialValue: this.state.user_info.address,
+                                        rules: [{ required: true, message: '请选择所在城市!' }]
+                                    })(
+                                        <Select style={{ width: 100 }} disabled={true}>
+                                            <Option value='成都'>成都</Option>
+                                            <Option value='北京'>北京</Option>
+                                        </Select>)}
                                 </Form.Item>
                                 <Form.Item label='联系电话' extra='你最好写真实的电话号码!'>
                                     {getFieldDecorator('phone', {
