@@ -12,7 +12,7 @@ const AppHeader = props => {
             <Menu.ItemGroup title='用户设置'>
                 <Menu.Divider />
                 <Menu.Item>
-                    <Icon type='edit' /><Link to={"/personal_info"}>个人信息</Link>
+                    <Link to={"/personal_info"}><Icon type='edit' /> 个人信息</Link>
                 </Menu.Item>
             </Menu.ItemGroup>
             <Menu.Divider />

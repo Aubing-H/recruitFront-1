@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { Layout, Input, Icon, Form, Button, Divider, message, notification } from 'antd'
 import { withRouter,Link } from 'react-router-dom'
-// import axios from '@/api'
-// import { API } from '@/api/config'
 import '@/style/view-style/login.scss'
 
 class Login extends Component {
@@ -22,7 +20,7 @@ class Login extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 let myHeaders = new Headers({
-                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Origin': 'http://localhost:3000',
                     'Content-Type': 'text/plain'
                 });
                 let url='http://127.0.0.1:8080/user/login'

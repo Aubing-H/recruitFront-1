@@ -27,7 +27,8 @@ class Register extends Component {
     getUserInfo(){
         let myHeaders = new Headers({
             'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'text/plain'
+            'Content-Type': 'text/plain',
+            Authorization:'Bearer '+localStorage.getItem('token')
         });
         let url='http://127.0.0.1:8080/user/info'
         let temp_value=JSON.parse(localStorage.getItem('user'))
@@ -95,7 +96,8 @@ class Register extends Component {
             this.modifying()
             let myHeaders = new Headers({
                 'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization:'Bearer '+localStorage.getItem('token')
             });
             let url='http://127.0.0.1:8080/user/modify'
             fetch(url,{

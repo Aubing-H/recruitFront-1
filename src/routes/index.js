@@ -37,6 +37,8 @@ const personal_info = loadable(() => import(/* webpackChunkName: 'about' */ '@/v
 const receiver_find = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/job_finder'))
 
 
+// const Image = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/Image'))
+const UsersView = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/users_info'))
 
 
 const routes = [
@@ -58,8 +60,9 @@ const routes = [
     { path: '/others/upload', exact: false, name: '上传', component: UploadView, auth: [1] },
     { path: '/one/two/three', exact: false, name: '三级', component: Three },
     { path: '/about', exact: false, name: '关于', component: About, auth: [1] },
-    { path: '/personal_info', exact: false, name: '个人信息', component: personal_info, auth: [0,1] },
-    { path: '/receiver/find', exact: false, name: '召集令查询', component: receiver_find, auth: [0,1] }
+    { path: '/personal_info', exact: false, name: '个人信息', component: personal_info, auth: [0] },
+    // { path: '/upload/image', exact: false, name: '图片', component: Image, auth: [0,1] },
+    { path: '/users_info', exact: false, name: '用户信息', component: UsersView, auth: [1] }
 ]
 
 export default routes

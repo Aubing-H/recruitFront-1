@@ -99,7 +99,8 @@ class UsersView extends Component{
 
     componentDidMount() {
         let myHeaders = new Headers({
-            'Access-Control-Allow-Origin': 'http://localhost:3000'
+            'Access-Control-Allow-Origin': 'http://localhost:3000',
+            Authorization:'Bearer '+localStorage.getItem('token')
         });
         let url='http://127.0.0.1:8080/user/all'
         fetch(url,{
@@ -113,6 +114,16 @@ class UsersView extends Component{
                 let newData=[]
                 if (data.isSuccess === 'success') {
                     data.user.map((a,index)=>{
+                        let register_time=new Date(a.register_time)
+                        a={...a,
+                            register_time:register_time.toDateString()+register_time.toTimeString()
+                        }
+                        if(a.modify_time!==null){
+                            let modify_time=new Date(a.modify_time)
+                            a={...a,
+                                modify_time:modify_time.toDateString()+modify_time.toTimeString()
+                            }
+                        }
                         newData.push(a)
                     })
                     console.log(newData)
@@ -120,6 +131,7 @@ class UsersView extends Component{
                         usersData:newData
                     })
                 } else {
+                    message.error('获取用户信息失败，请刷新页面')
                 }
             }
         )
