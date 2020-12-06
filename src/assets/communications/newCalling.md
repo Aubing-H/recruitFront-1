@@ -1,11 +1,11 @@
 ### 令主的召集令操作
 
-**'http://127.0.0.1:8080/user/tokensOwner/create'**
-
-request 请求
+创建表
 
 ```json
-{
+url: "http://127.0.0.1:8080/user/tokensOwner/create"
+type: request
+data: {
   "user_id": "123456", // 用户识别码
   "token_name": "前端招聘", // 召集令名称
   "token_type": "tech", // 召集令类别['tech', 'academic', 'social', 'volunteer', 'play']
@@ -14,15 +14,11 @@ request 请求
   "recruit_end": "2020/12/31", //截止时间
   "created_time": "2020/11/20" //创建时间
 }
-```
 
-response 服务器返回
-
-```json
-{
+type: response
+data: {
   "isSuccess": "success", // 创建成功"success", 创建失败"fail"
-  "content": {
-    // 没创建成功就没有相应的value数据
+  "content": {  // 没创建成功就没有相应的value数据
     "token_id": "122345", // 分配一个id号
     "state": "waitresp", // "waitresp"招聘中，"complete"招聘结束, "cancel", "timeout"
     "cur_recruit_nums": 0 //已经招聘的人数
@@ -30,35 +26,30 @@ response 服务器返回
 }
 ```
 
-**'/user/tokensOwner/delete'**
-
-request
+删除数据
 
 ```json
-{
+url: "/user/tokensOwner/delete"
+type: request
+data: {
   "user_id": "123456", // 用户识别码，密钥
   "token_id": "123456" // 召集令标识
 }
-```
-
-response
-
-```json
+type: response
 {
   "isSuccess": "success" // 创建成功"success", 创建失败"fail"
 }
 ```
 
-**'/user/tokensOwner/update'**
-
 request
 
 ```json
+url: '/user/tokensOwner/update'
 {
   "usr_id": "1234567", // 用户识别码，密钥
   "token_id": "123456", // 召集令标识
   "token_name": "前端招聘", // 召集令名称
-  "token_type": "tech", // 召集令类别['tech', 'study', 'socialize', 'volunteer', 'play']
+  "token_type": "tech", // 召集令类别['tech', 'academic', 'socialize', 'volunteer', 'play']
   "token_desc": "这是一个前端招聘", //描述
   "recruit_nums": 30, // 拟召集人数
   "recruit_end": "2020/12/31" //截止时间
@@ -89,19 +80,23 @@ request
 response
 
 ```json
-[
-  // 返回一个json数组，查不到就返回一个空数组
-  {
-    "token_id": "123456", //召集令识别码
-    "token_name": "腾讯前端招聘",
-    "created_time": "2020-03-04",
-    "recruit_end": "2020-12-15",
-    "state": "waitresp",
-    "recruit_nums": 30,
-    "cur_recruited_nums": 18,
-    "token_desc": "description"
-  }
-]
+{
+  "code":,
+  "message":,
+  "data":[
+    // 返回一个json数组，查不到就返回一个空数组
+    {
+      "token_id": "123456", //召集令识别码
+      "token_name": "腾讯前端招聘",
+      "created_time": "2020-03-04",
+      "recruit_end": "2020-12-15",
+      "state": "waitresp",
+      "recruit_nums": 30,
+      "cur_recruited_nums": 18,
+      "token_desc": "description"
+    }
+  ]
+}
 ```
 
 ### 'localhost:8080/user/tokenOwner/{username}'
@@ -125,11 +120,9 @@ request get
 ]
 ```
 
-### 'localhost:8080/user/tokenOwner/token/{token_id}'
-
-request get
-
 ```json
+url: "localhost:8080/user/tokenOwner/token/{token_id}"
+get
 {
   "usr_id": "1234567", // 用户识别码，密钥
   "token_id": "123456", // 召集令标识

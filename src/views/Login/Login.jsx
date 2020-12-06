@@ -12,9 +12,10 @@ import {
 import { withRouter, Link } from "react-router-dom";
 import "@/style/view-style/login.scss";
 
+const ipServer = "http://127.0.0.1:8080"; //'http://10.28.168.104:8080'
+
 class Login extends Component {
   state = {
-    //控制button是否展示加载状态
     loading: false
   };
 
@@ -32,7 +33,7 @@ class Login extends Component {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "text/plain"
         });
-        let url = "http://127.0.0.1:8080/user/login";
+        let url = ipServer + "/user/login";
         if (values) {
           let paramsArray = [];
           //拼接参数
@@ -80,7 +81,6 @@ class Login extends Component {
     notification.open({
       message: "欢迎使用后台管理平台",
       duration: 20
-      // description: ''
     });
   }
 

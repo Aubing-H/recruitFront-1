@@ -1,0 +1,25 @@
+.calling-details {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  .details-profile {
+    max-width: 300px;
+    left: 0;
+    padding: 10px;
+    background-color: white;
+    height: 100%;
+    .profile-head {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    }
+  }
+  .details-content {
+    margin-left: 10px;
+    padding: 0px;
+    .my-item {
+      margin: 0 0 10px 0;
+    }
+  }
+}

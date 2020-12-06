@@ -7,7 +7,8 @@ import {
   Row,
   Card,
   Descriptions,
-  Button
+  Button,
+  message
 } from "antd";
 import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -21,38 +22,47 @@ import dataModel from "../../assets/dataFrom/dataModel";
 const { Search } = Input;
 
 const ipaddr = "http://127.0.0.1:3000";
+const ipServer = "http://10.28.168.104:8080";
+// const ipServerLocal = "http://127.0.0.1:8080";
 
 class Calling extends React.Component {
-  state = {
-    call_type_select: "play",
-    call_state_select: "all",
-    search_key: "",
-    type_dropdown: "类型选择",
-    state_dropdown: "状态选择",
-    callings: JSON.parse(localStorage.callersCall)
-  };
-
-  componentWillMount() {
-    this.getInfo();
+  constructor(props) {
+    super(props);
+    this.getCallings();
+    this.state = {
+      call_type_select: "play",
+      call_state_select: "all",
+      search_key: "",
+      type_dropdown: "类型选择",
+      state_dropdown: "状态选择",
+      callings: JSON.parse(localStorage.callersCall)
+    };
   }
 
-  getInfo = () => {
-    if (
-      localStorage.getItem("load") == null ||
-      localStorage.getItem("load") == false
-    ) {
-      // 请求之前判断前端是否已存在数据，否则向服务器请求
-      // let user = localStorage.getItem('user')
-      // url = ipaddr + '/user/tokenOwner/' + user.username
-      // fetch(url).then(
-      //     data => {
-      //         console.log(data)
-      //     }
-      // )
+  getCallings = () => {
+    // 请求之前判断前端是否已存在数据，否则向服务器请求
+
+    let values = JSON.parse(localStorage.getItem("user")).username;
+    let myHeaders = new Headers({
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json;charset=utf-8"
+    });
+    let url = ipServer + "/tokensOwner/all?username=" + values;
+    fetch(url, {
+      method: "GET",
+      headers: myHeaders,
+      mode: "cors"
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("data:", data);
+      });
+    if (localStorage.getItem("callersCall") == null) {
+      localStorage.setItem(
+        "callersCall",
+        JSON.stringify(dataModel.callersCall)
+      );
     }
-    localStorage["callersCall"] = JSON.stringify(
-      Object.values(dataModel.callersCall)
-    );
   };
 
   handleMenuClick = e => {
@@ -73,6 +83,20 @@ class Calling extends React.Component {
     }
   };
 
+  onDetail = (e, item) => {
+    console.log("onDetail:");
+    localStorage.setItem("detailCur", JSON.stringify(item));
+    console.log(localStorage.getItem("detailCur"));
+    this.props.history.push("/calling_details");
+  };
+
+  onModify = (e, item) => {
+    console.log("onModify:");
+    localStorage.setItem("modifyCur", JSON.stringify(item));
+    console.log(localStorage.getItem("modifyCur"));
+    this.props.history.push("/calling_modify");
+  };
+
   onDelete = (e, call_id) => {
     let url = ipaddr + "/user/tokensOwner/delete";
     let myHeaders = new Headers({
@@ -84,7 +108,10 @@ class Calling extends React.Component {
       user_id: temp_value.user_id,
       token_id: call_id
     };
+
     console.log("onDelete: ", call_id);
+    message.success("已删除");
+
     // fetch(url,{
     //     method:'POST',
     //     headers: myHeaders,
@@ -100,19 +127,23 @@ class Calling extends React.Component {
     //         }
     //     }
     // )
-    const array = JSON.parse(localStorage.callersCall);
+
+    const array = this.state.callings;
     let i;
     for (i = 0; i < array.length; i++) {
       if (array[i].token_id === call_id) {
         break;
       }
     }
-    array.splice(i, 1); //删除
-    this.setState({ callings: array });
-    localStorage["callersCall"] = JSON.stringify(array);
+    if (array.length > 0) {
+      array.splice(i, 1); //删除
+      this.setState({ callings: array });
+      localStorage.setItem("callersCall", JSON.stringify(array));
+    }
   };
 
   render() {
+    // 渲染模式，每渲染一次（state变化触发等），会执行一次
     const onSearch = value => {
       console.log("onsearch: " + value);
     };
@@ -135,7 +166,17 @@ class Calling extends React.Component {
       </Menu>
     );
 
-    const array = this.state.callings;
+    let typeMap = new Map();
+    for (var i in calltype) {
+      typeMap.set(calltype[i].key, calltype[i].name);
+    }
+
+    let stateMap = new Map();
+    for (var j in callstate) {
+      stateMap.set(callstate[j].key, callstate[j].name);
+    }
+    var data = "";
+
     return (
       <Layout className="calling">
         <div className="calling-head">
@@ -161,8 +202,8 @@ class Calling extends React.Component {
           </div>
         </div>
         <Layout className="calling-content">
-          {array.map(item => (
-            <Row className="my-item">
+          {this.state.callings.map(item => (
+            <Row className="my-item" key={item.token_id}>
               <Card
                 title={item.token_name}
                 bordered={false}
@@ -170,7 +211,7 @@ class Calling extends React.Component {
               >
                 <Descriptions column={2}>
                   <Descriptions.Item label="召集令类型">
-                    {item.token_type}
+                    {typeMap.get(item.token_type)}
                   </Descriptions.Item>
                   <Descriptions.Item label="创建时间">
                     {item.created_time}
@@ -179,7 +220,7 @@ class Calling extends React.Component {
                     {item.recruit_end}
                   </Descriptions.Item>
                   <Descriptions.Item label="召集令状态">
-                    {item.state}
+                    {stateMap.get(item.state)}
                   </Descriptions.Item>
                   <Descriptions.Item label="召集人数（当前/总数）">
                     {item.cur_recruited_nums}/{item.recruit_nums}
@@ -188,11 +229,21 @@ class Calling extends React.Component {
                     {item.token_desc}
                   </Descriptions.Item>
                 </Descriptions>
-                <Link to={"/calling_modify?callID=" + item.token_id}>
-                  <Button type="primary" style={{ margin: "0 10px" }}>
-                    修改
-                  </Button>
-                </Link>
+                <Button
+                  type="primary"
+                  style={{ margin: "0 10px" }}
+                  onClick={e => this.onDetail(e, item)}
+                >
+                  详情
+                </Button>
+                <Button
+                  type="primary"
+                  style={{ margin: "0 10px" }}
+                  onClick={e => this.onModify(e, item)}
+                >
+                  修改
+                </Button>
+                {/* </Link> */}
                 <Button
                   type="primary"
                   style={{ margin: "0 10px" }}

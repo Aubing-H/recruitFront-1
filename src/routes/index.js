@@ -76,6 +76,7 @@ const caller_view = loadable(() => import(/*  */ "@/views/CallerView"));
 const Calling = loadable(() => import(/*  */ "@/views/Calling"));
 const CallingInfo = loadable(() => import(/*  */ "@/views/CallingInfo"));
 const CallingModify = loadable(() => import(/*  */ "@/views/CallingModify"));
+const CallingDetails = loadable(() => import(/*  */ "@/views/CallingDetails"));
 
 const routes = [
   { path: "/index", exact: true, name: "Index", component: Index, auth: [1] },
@@ -192,6 +193,13 @@ const routes = [
     exact: false,
     name: "修改召集令",
     component: CallingModify,
+    auth: [0, 1]
+  },
+  {
+    path: "/calling_details",
+    exact: false,
+    name: "召集令详情",
+    component: CallingDetails,
     auth: [0, 1]
   }
 ];

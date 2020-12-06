@@ -8,71 +8,74 @@ import {
   Input,
   Select,
   InputNumber,
-  DatePicker
+  DatePicker,
+  message
 } from "antd";
 import React from "react";
-import moment from "moment";
 import { withRouter, Link } from "react-router-dom";
 
 import "../../style/view-style/CallingInfo.scss";
 
 const { Option } = Select;
+const ipServer = "http://10.28.168.104:8080";
 
 class CallingInfo extends React.Component {
-  state = {};
+  state = {
+    inputTime: {}
+  };
 
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
-      let token = localStorage.getItem("token");
-      var now = new Date();
+      let user = JSON.parse(localStorage.getItem("user"));
       const values = {
-        callName: fieldsValue["callname"],
-        callType: fieldsValue["call_type"],
-        description: fieldsValue["description"],
-        callNum: fieldsValue["number"],
-        deadline: fieldsValue["end_time"].format("YYYY/MM/DD"),
-        setTime: now.toLocaleDateString()
+        username: user.username,
+        token_name: fieldsValue["callname"],
+        token_type: fieldsValue["call_type"],
+        token_desc: fieldsValue["description"],
+        recruit_nums: fieldsValue["number"],
+        recruit_end: this.state.inputTime
       };
-      console.log({
-        values: values,
-        token: token
-      });
-      this.modifying();
+      console.log("submit body:", values);
       let myHeaders = new Headers({
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json;charset=utf-8"
       });
-      let url = "http://127.0.0.1:8080/user/modify";
-      // fetch(url,{
-      //     method:'POST',
-      //     headers:myHeaders,
-      //     body:JSON.stringify({
-      //         user:values,
-      //         token:token
-      //     }),
-      //     mode:'cors'
-      // }).then(res=>res.text()).then(data=>{
-      //     console.log(data)
-      //     if(data==="success"){
-      //         message.info('创建成功')
-      //         //重新调用此界面
-      //         this.setState({
-      //             loading:false
-      //         })
-      //         // this.props.history.reload()
-      //         // this.props.history.push('/personal_info')
-      //     }else{
-      //         this.setState({loading:false})
-      //         message.error("创建失败,请联系管理员：yuhang@bupt.edu.cn")
-      //     }
-      // })
+      let url = ipServer + "/tokensOwner/create";
+      fetch(url, {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(values),
+        mode: "cors"
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("data:", data);
+        });
+
+      const item = {
+        token_id: "660012",
+        token_name: fieldsValue["callname"],
+        token_type: fieldsValue["call_type"],
+        created_time: "2020/03/04",
+        recruit_end: "2020/08/08",
+        state: "timeout",
+        recruit_nums: fieldsValue["number"],
+        cur_recruited_nums: 4,
+        token_desc: fieldsValue["description"]
+      };
+
+      const originCall = JSON.parse(localStorage.callersCall);
+      originCall.push(item);
+      localStorage.setItem("callersCall", JSON.stringify(originCall));
+      message.success("添加成功");
+      this.props.history.push("/offer_info");
     });
   };
 
   onChange = (time, timeString) => {
-    console.log(time, timeString);
+    this.setState({ inputTime: time });
   };
 
   render() {
@@ -112,7 +115,6 @@ class CallingInfo extends React.Component {
                     rules: [
                       {
                         required: true,
-                        message: "请输入召集令名称",
                         min: 3,
                         message: "召集令名称最少为3"
                       }
@@ -128,7 +130,7 @@ class CallingInfo extends React.Component {
                   })(
                     <Select>
                       <Option value="tech">技术交流</Option>
-                      <Option value="study">学习探讨</Option>
+                      <Option value="academic">学习探讨</Option>
                       <Option value="socialize">社会实践</Option>
                       <Option value="volunteer">公益志愿者</Option>
                       <Option value="play">游玩</Option>
