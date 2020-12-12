@@ -18,6 +18,12 @@ const menu = [
         auth: [0]
     },
     {
+        key: '/tokens_info',
+        title: '召集令信息',
+        icon: 'appstore',
+        auth: [1]
+    },
+    {
         key: '/profit_info',
         title: '收益信息',
         icon: 'pie-chart',

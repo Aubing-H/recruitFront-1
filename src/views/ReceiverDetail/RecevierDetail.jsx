@@ -162,7 +162,7 @@ class RecevierDetail extends Component {
                                             <Option value='北京'>北京</Option>
                                         </Select>)}
                                 </Form.Item>
-                                <Form.Item label='联系电话' extra='你最好写真实的电话号码!'>
+                                <Form.Item label='联系电话'>
                                     {getFieldDecorator('phone', {
                                         rules: [{ required: true, message: '请输入联系电话!' },
                                             {min:11,max:11,message: '电话号码为11位'}],
