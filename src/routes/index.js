@@ -44,6 +44,12 @@ const Calling = loadable(() => import(/*  */ "@/views/Calling"));
 const CallingInfo = loadable(() => import(/*  */ "@/views/CallingInfo"));
 const CallingModify = loadable(() => import(/*  */ "@/views/CallingModify"));
 const CallingDetails = loadable(() => import(/*  */ "@/views/CallingDetails"));
+const ReqToken = loadable(() => import(/*  */ "@/views/ReqToken"));
+const ReqDetail = loadable(() => import(/*  */ "@/views/ReqDetail"));
+const ReqModify = loadable(() => import(/*  */ "@/views/ReqModify"));
+const MyReq = loadable(() => import(/*  */ "@/views/MyReq"));
+const ReceiverDetail = loadable(() => import(/*  */ "@/views/ReceiverDetail"));
+const TokenDetails = loadable(() => import(/*  */ "@/views/TokenDetails"));
 
 const routes = [
     { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
@@ -67,40 +73,46 @@ const routes = [
     { path: '/personal_info', exact: false, name: '个人信息', component: personal_info, auth: [0] },
     // { path: '/upload/image', exact: false, name: '图片', component: Image, auth: [0,1] },
     { path: '/users_info', exact: false, name: '用户信息', component: UsersView, auth: [1] },
-    {
-        path: "/owner",
-        exact: false,
-        name: "我是令主",
-        component: caller_view,
-        auth: [0, 1]
-    },
+    { path: '/receiver/receiver_info', exact: false, name: '接令请求信息', component: ReqToken, auth: [0] },
+    { path: '/receiver/req_detail', exact: false, name: '接令描述', component: ReqDetail, auth: [0] },
+    { path: '/receiver/myall', exact: false, name: '已接令', component: MyReq, auth: [0] },
+    { path: '/recevier/req_modify', exact: false, name: '修改召集令请求', component: ReqModify, auth: [0] },
+    { path: '/receiver_detail', exact: false, name: '接令者详细信息', component: ReceiverDetail, auth: [0] },
+    { path: '/TokenDetails', exact: false, name: '召集令信息', component: TokenDetails, auth: [0] },
+    // {
+    //     path: "/owner",
+    //     exact: false,
+    //     name: "我是令主",
+    //     component: caller_view,
+    //     auth: [0, 1]
+    // },
     {
         path: "/offer_info",
         exact: false,
-        name: "召集令信息",
+        name: "我是令主",
         component: Calling,
-        auth: [0, 1]
+        auth: [0]
     },
     {
         path: "/calling_info",
         exact: false,
         name: "新建召集令",
         component: CallingInfo,
-        auth: [0, 1]
+        auth: [0]
     },
     {
         path: "/calling_modify",
         exact: false,
         name: "修改召集令",
         component: CallingModify,
-        auth: [0, 1]
+        auth: [0]
     },
     {
         path: "/calling_details",
         exact: false,
         name: "召集令详情",
         component: CallingDetails,
-        auth: [0, 1]
+        auth: [0]
     }
 ]
 

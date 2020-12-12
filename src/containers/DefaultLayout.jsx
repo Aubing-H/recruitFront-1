@@ -40,13 +40,15 @@ class DefaultLayout extends Component {
     getMenu = menu => {
         let newMenu,
             auth = JSON.parse(localStorage.getItem('user')).auth
-        if (!auth) {
-            return menu
-        } else {
-            //indexOf代表这个数组中是否包含这个值
-            newMenu = menu.filter(res => res.auth && res.auth.indexOf(auth) !== -1)
-            return newMenu
-        }
+        // if (!auth) {
+        //     return menu
+        // } else {
+        //     //indexOf代表这个数组中是否包含这个值
+        //     newMenu = menu.filter(res =>res.auth.indexOf(auth) !== -1)
+        //     return newMenu
+        // }
+        newMenu = menu.filter(res =>res.auth.indexOf(auth) !== -1)
+        return newMenu
     }
 
     componentDidMount() {
@@ -77,6 +79,7 @@ class DefaultLayout extends Component {
     render() {
         let { menuClick, menuToggle } = this.props
         let { auth } = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : ''
+        console.log(auth)
         return (
             <Layout className='app'>
                 <BackTop />
@@ -98,9 +101,7 @@ class DefaultLayout extends Component {
                                         path={item.path}
                                         exact={item.exact}
                                         render={props =>
-                                            !auth ? (
-                                                <item.component {...props} />
-                                            ) : item.auth && item.auth.indexOf(auth) !== -1 ? (
+                                            item.auth.indexOf(auth) !== -1 ? (
                                                 <item.component {...props} />
                                             ) : (
                                                 // 这里也可以跳转到 403 页面

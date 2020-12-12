@@ -46,7 +46,7 @@ create table if not exists `Token`(
 create table if not exists `TokenReq`(
     `req_id`    int unsigned not null primary key auto_increment,
     `token_id`  int unsigned not null,
-    `rec_username` varchar(30) not null ,
+    `owner_username` varchar(30) not null ,
     `req_username`  varchar(30) not null,       #是否可以使用user_id
     `req_desc`  varchar(100) not null ,
     `created_time` DATE not null,

@@ -8,7 +8,7 @@ import {
   Card,
   Descriptions,
   Button,
-  message
+  message, Avatar
 } from "antd";
 import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -16,8 +16,12 @@ import { Link } from "react-router-dom";
 import calltype from "../../assets/dataFrom/calltype";
 import callstate from "../../assets/dataFrom/callstate";
 
+import "../../style/view-style/CallerView.scss";
+
 import "../../style/view-style/Calling.scss";
 import dataModel from "../../assets/dataFrom/dataModel";
+import Moment from "moment";
+import avater from "../../assets/images/user.jpg";
 
 const { Search } = Input;
 
@@ -28,42 +32,34 @@ const ipServer = "http://10.28.168.104:8080";
 class Calling extends React.Component {
   constructor(props) {
     super(props);
-    this.getCallings();
     this.state = {
       call_type_select: "play",
       call_state_select: "all",
       search_key: "",
       type_dropdown: "类型选择",
       state_dropdown: "状态选择",
-      callings: JSON.parse(localStorage.callersCall)
+      callings: []
     };
   }
-
-  getCallings = () => {
-    // 请求之前判断前端是否已存在数据，否则向服务器请求
-
-    let values = JSON.parse(localStorage.getItem("user")).username;
+  componentDidMount() {
+    let user = JSON.parse(localStorage.getItem("user"));
     let myHeaders = new Headers({
       "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json;charset=utf-8"
+      "Content-Type": "application/json;charset=utf-8",
+      Authorization:'Bearer '+localStorage.getItem('token')
     });
-    let url = ipServer + "/tokensOwner/all?username=" + values;
-    fetch(url, {
-      method: "GET",
-      headers: myHeaders,
-      mode: "cors"
+    let url = "http://localhost:8080/tokensOwner/all?username="+user.username;
+    fetch(url,{
+      method:'GET',
+      headers:myHeaders,
+      mode:'cors'
+    }).then(res=>res.json()).then(data=>{
+
+      this.setState({
+        callings:data.data
+      })
     })
-      .then(res => res.json())
-      .then(data => {
-        console.log("data:", data);
-      });
-    if (localStorage.getItem("callersCall") == null) {
-      localStorage.setItem(
-        "callersCall",
-        JSON.stringify(dataModel.callersCall)
-      );
-    }
-  };
+  }
 
   handleMenuClick = e => {
     for (let i = 0; i < calltype.length; i++) {
@@ -91,42 +87,38 @@ class Calling extends React.Component {
   };
 
   onModify = (e, item) => {
-    console.log("onModify:");
-    localStorage.setItem("modifyCur", JSON.stringify(item));
-    console.log(localStorage.getItem("modifyCur"));
+    if(item.cur_recruited_nums>0){
+      message.error("此召集令已被响应，不可修改!")
+      return
+    }
+    localStorage.setItem("modifyCur",JSON.stringify(item));
     this.props.history.push("/calling_modify");
   };
 
-  onDelete = (e, call_id) => {
-    let url = ipaddr + "/user/tokensOwner/delete";
+  onDelete = (e, item) => {
+    if(item.cur_recruited_nums>0){
+      message.error("此召集令已被响应，不可删除!")
+      return
+    }
+    let call_id=item.token_id
+    let url = "http://localhost:8080/tokensOwner/delete?token_id="+call_id;
     let myHeaders = new Headers({
       "Access-Control-Allow-Origin": "*",
-      "Content-Type": "text/plain"
+      "Content-Type": "text/plain",
+      Authorization:'Bearer '+localStorage.getItem('token')
     });
-    let temp_value = JSON.parse(localStorage.getItem("user"));
-    const myBody = {
-      user_id: temp_value.user_id,
-      token_id: call_id
-    };
 
-    console.log("onDelete: ", call_id);
-    message.success("已删除");
-
-    // fetch(url,{
-    //     method:'POST',
-    //     headers: myHeaders,
-    //     mode: 'cors',
-    //     body: myBody
-    //     //转或称字符串格式
-    // }).then(res=>res.json()).then(
-    //     res => {
-    //         if(res.isSuccess === 'success'){
-    //             // 在本地删除该数据 或者重新请求数据
-    //         }else{
-    //             console.log('删除失败')
-    //         }
-    //     }
-    // )
+    fetch(url,{
+        method:'POST',
+        headers: myHeaders,
+        mode: 'cors'
+    }).then(res=>res.json()).then(data=>{
+      if(data.message==="success"){
+        message.info("删除成功")
+      }else{
+        message.error("删除失败")
+      }
+    })
 
     const array = this.state.callings;
     let i;
@@ -138,7 +130,6 @@ class Calling extends React.Component {
     if (array.length > 0) {
       array.splice(i, 1); //删除
       this.setState({ callings: array });
-      localStorage.setItem("callersCall", JSON.stringify(array));
     }
   };
 
@@ -214,10 +205,13 @@ class Calling extends React.Component {
                     {typeMap.get(item.token_type)}
                   </Descriptions.Item>
                   <Descriptions.Item label="创建时间">
-                    {item.created_time}
+                    {Moment(item.created_time).format("YYYY-MM-DD")}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="上次修改时间">
+                    {item.modified_time?Moment(item.modified_time).format("YYYY-MM-DD"):''}
                   </Descriptions.Item>
                   <Descriptions.Item label="结束日期">
-                    {item.recruit_end}
+                    { Moment(item.recruit_end).format("YYYY-MM-DD")}
                   </Descriptions.Item>
                   <Descriptions.Item label="召集令状态">
                     {stateMap.get(item.state)}
@@ -247,7 +241,7 @@ class Calling extends React.Component {
                 <Button
                   type="primary"
                   style={{ margin: "0 10px" }}
-                  onClick={e => this.onDelete(e, item.token_id)}
+                  onClick={e => this.onDelete(e, item)}
                 >
                   删除
                 </Button>

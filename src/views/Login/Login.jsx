@@ -47,7 +47,11 @@ class Login extends Component {
                             localStorage.setItem('user', JSON.stringify(values))
                             //todo 后期改进token
                             localStorage.setItem('token', data.token)
-                            this.props.history.push('/')
+                            if(data.kind===0){
+                                this.props.history.push('/offer_info')
+                            }else{
+                                this.props.history.push('/users_info')
+                            }
                             message.success('登录成功!')
                         } else {
                             // 这里处理一些错误信息

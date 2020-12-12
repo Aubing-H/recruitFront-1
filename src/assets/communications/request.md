@@ -46,7 +46,7 @@ response:
         {
             "req_id":123,
             "token_id":123,
-            "rec_username":"111",
+            "owner_username":"111",
             "req_desc":"shisha",
             "created_time":xx-xx-xx,
             "modified_time":xx-xx-xx,
@@ -64,7 +64,7 @@ url:/tokenReq/create
 request:
 {
 	"token_id":123,
-    "rec_username":"fabuzhe",
+    "owner_username":"fabuzhe",
     "req_username":"wzla",
     "req_desc":"wo yao jieling a",
     "state":"waitprocess"

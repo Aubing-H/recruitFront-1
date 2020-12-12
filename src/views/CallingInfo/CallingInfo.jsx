@@ -17,7 +17,6 @@ import { withRouter, Link } from "react-router-dom";
 import "../../style/view-style/CallingInfo.scss";
 
 const { Option } = Select;
-const ipServer = "http://10.28.168.104:8080";
 
 class CallingInfo extends React.Component {
   state = {
@@ -35,40 +34,40 @@ class CallingInfo extends React.Component {
         token_type: fieldsValue["call_type"],
         token_desc: fieldsValue["description"],
         recruit_nums: fieldsValue["number"],
-        recruit_end: this.state.inputTime
+        recruit_end: fieldsValue['end_time'].format('YYYY-MM-DD'),
+        photo:'123for temp'
       };
-      console.log("submit body:", values);
+      console.log("submit body:", JSON.stringify(values));
       let myHeaders = new Headers({
         "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json;charset=utf-8"
+        "Content-Type": "application/json;charset=utf-8",
+        Authorization:'Bearer '+localStorage.getItem('token')
       });
-      let url = ipServer + "/tokensOwner/create";
-      fetch(url, {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(values),
-        mode: "cors"
+      let url = "http://localhost:8080/tokensOwner/create";
+      fetch(url,{
+        method:'POST',
+        headers:myHeaders,
+        body:JSON.stringify(values),
+        mode:'cors'
+      }).then(res=>res.json()).then(data=>{
+        console.log(data)
       })
-        .then(res => res.json())
-        .then(data => {
-          console.log("data:", data);
-        });
 
-      const item = {
-        token_id: "660012",
-        token_name: fieldsValue["callname"],
-        token_type: fieldsValue["call_type"],
-        created_time: "2020/03/04",
-        recruit_end: "2020/08/08",
-        state: "timeout",
-        recruit_nums: fieldsValue["number"],
-        cur_recruited_nums: 4,
-        token_desc: fieldsValue["description"]
-      };
-
-      const originCall = JSON.parse(localStorage.callersCall);
-      originCall.push(item);
-      localStorage.setItem("callersCall", JSON.stringify(originCall));
+      // const item = {
+      //   token_id: "660012",
+      //   token_name: fieldsValue["callname"],
+      //   token_type: fieldsValue["call_type"],
+      //   created_time: "2020/03/04",
+      //   recruit_end: "2020/08/08",
+      //   state: "timeout",
+      //   recruit_nums: fieldsValue["number"],
+      //   cur_recruited_nums: 4,
+      //   token_desc: fieldsValue["description"]
+      // };
+      //
+      // const originCall = JSON.parse(localStorage.callersCall);
+      // originCall.push(item);
+      // localStorage.setItem("callersCall", JSON.stringify(originCall));
       message.success("添加成功");
       this.props.history.push("/offer_info");
     });
@@ -131,7 +130,7 @@ class CallingInfo extends React.Component {
                     <Select>
                       <Option value="tech">技术交流</Option>
                       <Option value="academic">学习探讨</Option>
-                      <Option value="socialize">社会实践</Option>
+                      <Option value="social">社会实践</Option>
                       <Option value="volunteer">公益志愿者</Option>
                       <Option value="play">游玩</Option>
                     </Select>

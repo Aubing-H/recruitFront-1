@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {Layout, Divider, Row, Col, Tag, Table, Button, Anchor, message} from 'antd'
 import '@/style/view-style/table.scss'
+import Moment from 'moment'
 
 const columns = [
     {
@@ -80,6 +81,9 @@ const columns = [
         title: '注册时间',
         key: 'register_time',
         dataIndex: 'register_time',
+        render:register_time=>{
+            return Moment(register_time).format("YYYY-MM-DD")
+        }
     },
     {
         title: '个人简介',
@@ -90,6 +94,11 @@ const columns = [
         title: '修改时间',
         key: 'modify_time',
         dataIndex: 'modify_time',
+        render:modify_time=>{
+            if(modify_time!==null){
+                return Moment(modify_time).format("YYYY-MM-DD")
+            }
+        }
     }
 ]
 class UsersView extends Component{
@@ -114,16 +123,16 @@ class UsersView extends Component{
                 let newData=[]
                 if (data.isSuccess === 'success') {
                     data.user.map((a,index)=>{
-                        let register_time=new Date(a.register_time)
-                        a={...a,
-                            register_time:register_time.toDateString()+register_time.toTimeString()
-                        }
-                        if(a.modify_time!==null){
-                            let modify_time=new Date(a.modify_time)
-                            a={...a,
-                                modify_time:modify_time.toDateString()+modify_time.toTimeString()
-                            }
-                        }
+                        // let register_time=new Date(a.register_time)
+                        // a={...a,
+                        //     register_time:register_time.toDateString()+register_time.toTimeString()
+                        // }
+                        // if(a.modify_time!==null){
+                        //     let modify_time=new Date(a.modify_time)
+                        //     a={...a,
+                        //         modify_time:modify_time.toDateString()+modify_time.toTimeString()
+                        //     }
+                        // }
                         newData.push(a)
                     })
                     console.log(newData)

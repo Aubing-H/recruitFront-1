@@ -13,9 +13,10 @@ import {
   message
 } from "antd";
 import { withRouter, Link } from "react-router-dom";
-import moment from "moment";
+import Moment from "moment";
 
 import calltype from "../../assets/dataFrom/calltype";
+import stateMap from "../../assets/dataFrom/stateMap";
 
 const { Option } = Select;
 const ipServer = "http://10.28.173.174:8080";
@@ -23,60 +24,37 @@ const ipServer = "http://10.28.173.174:8080";
 class CallingModify extends React.Component {
   state = {};
 
-  getUserInfo = () => {
-    // 再页面渲染之前得到修改之前的召集令数据
-    // let url = "http://127.0.0.1:8080/user/tokenOwner/token/";
-    // let myHeaders = new Headers({
-    //     'Access-Control-Allow-Origin': '*',
-    //     'Content-Type': 'text/plain'
-    // });
-    // fetch(url + "token_id").then(function(response) {
-    //   console.log(response);
-    // });
-    console.log("param:", this.props.params);
-    console.log("search:", this.props.location.search);
-  };
-
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
-      let token = localStorage.getItem("token");
       var now = new Date();
-      /*
-      token_id: "106040",
-      token_name: "健步社讲座招聘",
-      token_type: "social",
-      created_time: "2020/03/04",
-      recruit_end: "2020/12/15",
-      state: "timeout",
-      recruit_nums: 160,
-      cur_recruited_nums: 4,
-      token_desc: "description6695" 
-      */
+      const modify_token = JSON.parse(localStorage.getItem("modifyCur"));
       const values = {
+        token_id:modify_token.token_id,
         token_name: fieldsValue["callName"],
-        token_id: fieldsValue["callID"],
-        token_type: fieldsValue["call_type"],
+        token_type: fieldsValue["callType"],
         token_desc: fieldsValue["description"],
         recruit_nums: fieldsValue["number"],
-        recruit_end: fieldsValue["end_time"]
+        recruit_end: fieldsValue["endTime"],
+        photo:"temp"
       };
       console.log("body:", values);
       let myHeaders = new Headers({
         "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json;charset=utf-8"
+        "Content-Type": "application/json;charset=utf-8",
+        Authorization:'Bearer '+localStorage.getItem('token')
       });
-      let url = ipServer + "/tokensOwner/modify";
-      //   fetch(url,{
-      //       method:'POST',
-      //       headers:myHeaders,
-      //       body:JSON.stringify(values),
-      //       mode:'cors'
-      //   })
-      //  .then(res=>res.json()).then(data=>{
-      //       console.log(data)
-      //   })
+      let url = "http://localhost:8080/tokensOwner/update";
+        fetch(url,{
+            method:'POST',
+            headers:myHeaders,
+            body:JSON.stringify(values),
+            mode:'cors'
+        })
+       .then(res=>res.json()).then(data=>{
+            console.log(data)
+        })
       // const item = {
       //   token_id: "660012",
       //   token_name: fieldsValue["callname"],
@@ -96,24 +74,7 @@ class CallingModify extends React.Component {
     });
   };
 
-  onChange = (time, timeString) => {
-    console.log("time change:", timeString);
-    this.setState({ inputTime: time });
-  };
 
-  getSearch = () => {
-    // 获取前一个页面的参数信息
-    var search = this.props.location.search; //获取url中"?"符后的字串
-    var theRequest = {};
-    if (search.indexOf("?") !== -1) {
-      var str = search.substr(1);
-      let strs = str.split("&");
-      for (var i = 0; i < strs.length; i++) {
-        theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-      }
-    }
-    return theRequest;
-  };
 
   render() {
     const data = JSON.parse(localStorage.getItem("modifyCur"));
@@ -162,17 +123,18 @@ class CallingModify extends React.Component {
                     initialValue: data.token_name
                   })(<Input />)}
                 </Form.Item>
-                {/* 召集令ID */}
-                <Form.Item label="召集令ID">
-                  {getFieldDecorator("callID", {
-                    initialValue: data.token_id
-                  })(<Input disabled={true} />)}
-                </Form.Item>
+                {/*不需要展示召集令ID*/}
+                {/*/!* 召集令ID *!/*/}
+                {/*<Form.Item label="召集令ID">*/}
+                {/*  {getFieldDecorator("callID", {*/}
+                {/*    initialValue: data.token_id*/}
+                {/*  })(<Input disabled={true} />)}*/}
+                {/*</Form.Item>*/}
                 {/* 召集令类型 */}
                 <Form.Item label="召集令类型">
                   {getFieldDecorator("callType", {
                     initialValue: data.token_type,
-                    rules: [{ required: true, message: "请选择所在城市!" }]
+                    rules: [{ required: true, message: "请选择召集令类型!" }]
                   })(
                     <Select>
                       {calltype.map(item => (
@@ -195,7 +157,7 @@ class CallingModify extends React.Component {
                 {/* 召集令状态 */}
                 <Form.Item label="召集令状态">
                   {getFieldDecorator("state", {
-                    initialValue: data.state
+                    initialValue: stateMap[data.state]
                   })(<Input disabled={true} />)}
                 </Form.Item>
                 {/* 拟召集人数 */}
@@ -221,10 +183,9 @@ class CallingModify extends React.Component {
                 <Form.Item label="结束时间">
                   {getFieldDecorator("endTime", {
                     rules: [{ required: true, message: "请输入截止时间" }],
-                    initialValue: moment(data.recruit_end, "YYYY/MM/DD")
+                    initialValue: Moment(data.recruit_end)
                   })(
                     <DatePicker
-                      onChange={this.onChange}
                       style={{ width: "100%" }}
                     />
                   )}
