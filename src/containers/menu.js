@@ -24,6 +24,12 @@ const menu = [
         auth: [1]
     },
     {
+        key: '/reqs_info',
+        title: '召集令请求信息',
+        icon: 'paper-clip',
+        auth: [1]
+    },
+    {
         key: '/profit_info',
         title: '收益信息',
         icon: 'pie-chart',

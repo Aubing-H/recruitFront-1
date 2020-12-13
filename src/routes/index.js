@@ -51,6 +51,8 @@ const MyReq = loadable(() => import(/*  */ "@/views/MyReq"));
 const ReceiverDetail = loadable(() => import(/*  */ "@/views/ReceiverDetail"));
 const TokenDetails = loadable(() => import(/*  */ "@/views/TokenDetails"));
 const AdminToken = loadable(() => import(/*  */ "@/views/AdminToken"));
+const AdminReq = loadable(() => import(/*  */ "@/views/AdminReq"));
+const ProfitView = loadable(() => import(/*  */ "@/views/ProfitView"));
 
 const routes = [
     { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
@@ -81,6 +83,8 @@ const routes = [
     { path: '/receiver_detail', exact: false, name: '接令者详细信息', component: ReceiverDetail, auth: [0,1] },
     { path: '/TokenDetails', exact: false, name: '召集令信息', component: TokenDetails, auth: [0] },
     { path: '/tokens_info', exact: false, name: '召集令信息', component: AdminToken, auth: [1] },
+    { path: '/reqs_info', exact: false, name: '召集令请求信息', component: AdminReq, auth: [1] },
+    { path: '/profit_info', exact: false, name: '收益信息', component: ProfitView, auth: [1] },
     // {
     //     path: "/owner",
     //     exact: false,
