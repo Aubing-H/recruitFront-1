@@ -144,9 +144,6 @@ class MyReq extends React.Component {
 
     render() {
         // 渲染模式，每渲染一次（state变化触发等），会执行一次
-        const onSearch = value => {
-            console.log("onsearch: " + value);
-        };
 
         const menu = (
             <Menu onClick={this.handleMenuClick}>
@@ -179,22 +176,6 @@ class MyReq extends React.Component {
 
         return (
             <Layout className="calling">
-                <div className="calling-head">
-                    <div className="search">
-                        <Search
-                            placeholder="input search text"
-                            allowClear
-                            onSearch={onSearch}
-                            style={{ width: 200, margin: "0 10px" }}
-                        />
-                    </div>
-                    <Dropdown.Button overlay={menu} className="search">
-                        {this.state.type_dropdown}
-                    </Dropdown.Button>
-                    <Dropdown.Button overlay={menuState} className="search">
-                        {this.state.state_dropdown}
-                    </Dropdown.Button>
-                </div>
                 <Layout className="calling-content">
                     {this.state.callingReqs.map(item => (
                         <Row className="my-item" key={item.req_id}>

@@ -37,7 +37,7 @@ const personal_info = loadable(() => import(/* webpackChunkName: 'about' */ '@/v
 const receiver_find = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/job_finder'))
 
 
-// const Image = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/Image'))
+const Image = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/Image'))
 const UsersView = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/users_info'))
 const caller_view = loadable(() => import(/*  */ "@/views/CallerView"));
 const Calling = loadable(() => import(/*  */ "@/views/Calling"));
@@ -53,6 +53,7 @@ const TokenDetails = loadable(() => import(/*  */ "@/views/TokenDetails"));
 const AdminToken = loadable(() => import(/*  */ "@/views/AdminToken"));
 const AdminReq = loadable(() => import(/*  */ "@/views/AdminReq"));
 const ProfitView = loadable(() => import(/*  */ "@/views/ProfitView"));
+const TollsUser = loadable(() => import(/*  */ "@/views/TollsUser"));
 
 const routes = [
     { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
@@ -74,7 +75,7 @@ const routes = [
     { path: '/one/two/three', exact: false, name: '三级', component: Three },
     { path: '/about', exact: false, name: '关于', component: About, auth: [1] },
     { path: '/personal_info', exact: false, name: '个人信息', component: personal_info, auth: [0] },
-    // { path: '/upload/image', exact: false, name: '图片', component: Image, auth: [0,1] },
+    { path: '/upload/image', exact: false, name: '图片', component: Image, auth: [0,1] },
     { path: '/users_info', exact: false, name: '用户信息', component: UsersView, auth: [1] },
     { path: '/receiver/receiver_info', exact: false, name: '查询召集令信息', component: ReqToken, auth: [0] },
     { path: '/receiver/req_detail', exact: false, name: '接令描述', component: ReqDetail, auth: [0] },
@@ -85,6 +86,7 @@ const routes = [
     { path: '/tokens_info', exact: false, name: '召集令信息', component: AdminToken, auth: [1] },
     { path: '/reqs_info', exact: false, name: '召集令请求信息', component: AdminReq, auth: [1] },
     { path: '/profit_info', exact: false, name: '收益信息', component: ProfitView, auth: [1] },
+    { path: '/byuser', exact: false, name: '用户排序信息', component: TollsUser, auth: [1] },
     // {
     //     path: "/owner",
     //     exact: false,

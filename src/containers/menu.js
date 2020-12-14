@@ -36,6 +36,12 @@ const menu = [
         auth: [1]
     },
     {
+        key: '/byuser',
+        title: '按用户排序的收费信息',
+        icon: 'pie-chart',
+        auth: [1]
+    },
+    {
         key: '/personal_info',
         title: '个人信息',
         icon: 'user',

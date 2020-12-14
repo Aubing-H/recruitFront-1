@@ -17,12 +17,13 @@ class ReqToken extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            call_type_select: "play",
-            call_state_select: "all",
+            typeKey: "all",
+            stateKey: "all",
             search_key: "",
             type_dropdown: "类型选择",
             state_dropdown: "状态选择",
-            callings: []
+            callings: [],
+            total:[]
         };
     }
     componentDidMount() {
@@ -37,8 +38,63 @@ class ReqToken extends React.Component{
             mode:'cors'
         }).then(res=>res.json()).then(data=>{
             this.setState({
+                total:data.data,
                 callings:data.data
             })
+        })
+    }
+    changeDataByType(type){
+        let newData=[]
+        this.state.total.map(item=>{
+            if(type==='all'){
+                if(this.state.stateKey==='all'){
+                    newData.push(item)
+                }else{
+                    if(item.state===this.state.stateKey){
+                        newData.push(item)
+                    }
+                }
+            }
+            else if(item.token_type===type){
+                console.log(this.state.stateKey)
+                if(this.state.stateKey==='all'){
+                    newData.push(item)
+                }else{
+                    if(item.state===this.state.stateKey){
+                        newData.push(item)
+                    }
+                }
+            }
+        })
+        this.setState({
+            callings:newData
+        })
+    }
+    changeDataByState(state){
+        let newData=[]
+        this.state.total.map(item=>{
+            if(state==='all'){
+                if(this.state.typeKey==='all'){
+                    newData.push(item)
+                }else{
+                    if(item.token_type===this.state.typeKey){
+                        newData.push(item)
+                    }
+                }
+            }
+            else if(item.state===state){
+                console.log(this.state.typeKey)
+                if(this.state.typeKey==='all'){
+                    newData.push(item)
+                }else{
+                    if(item.token_type===this.state.typeKey){
+                        newData.push(item)
+                    }
+                }
+            }
+        })
+        this.setState({
+            callings:newData
         })
     }
 
@@ -46,6 +102,8 @@ class ReqToken extends React.Component{
         for (let i = 0; i < calltype.length; i++) {
             if (calltype[i].key === e.key) {
                 this.setState({ type_dropdown: calltype[i].name });
+                this.setState({ typeKey: e.key });
+                this.changeDataByType(e.key)
                 break;
             }
         }
@@ -55,6 +113,8 @@ class ReqToken extends React.Component{
         for (let i = 0; i < callstate.length; i++) {
             if (callstate[i].key === e.key) {
                 this.setState({ state_dropdown: callstate[i].name });
+                this.setState({stateKey:e.key})
+                this.changeDataByState(e.key)
                 break;
             }
         }
@@ -68,6 +128,19 @@ class ReqToken extends React.Component{
         // 渲染模式，每渲染一次（state变化触发等），会执行一次
         const onSearch = value => {
             console.log("onsearch: " + value);
+            let newData=[]
+            this.state.total.map(item=>{
+                if(item.token_name.indexOf(value)!==-1){
+                    if(this.state.typeKey==='all'||this.state.typeKey===item.token_type){
+                        if(this.state.stateKey==='all'||this.state.stateKey===item.state){
+                            newData.push(item)
+                        }
+                    }
+                }
+            })
+            this.setState({
+                callings:newData
+            })
         };
 
         const menu = (
@@ -99,16 +172,25 @@ class ReqToken extends React.Component{
         }
         var data = "";
 
+
         return (
             <Layout className="calling">
+                <div>
+                        <span>
+                            请先选择类型及状态，再输入关键词搜索
+                        </span>
+                </div>
                 <div className="calling-head">
-                    <div className="search">
+
+                    <div >
                         <Search
                             placeholder="input search text"
                             allowClear
+                            // onChange={onSearch}
                             onSearch={onSearch}
                             style={{ width: 200, margin: "0 10px" }}
                         />
+
                     </div>
                     <Dropdown.Button overlay={menu} className="search">
                         {this.state.type_dropdown}
